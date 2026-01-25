@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <style>
+      /* BIG CARD DESIGN */
+      .container {
+        width: 520px; /* bigger card */
+        padding: 60px 55px; /* wide spacing */
+        border-radius: 12px;
+        box-shadow: 0px 25px 40px rgba(0, 0, 0, 0.25);
+      }
+
+      .header h2 {
+        font-size: 30px;
+        letter-spacing: 0.8px;
+        margin: 0;
+        text-align: center;
+        font-weight: 700;
+      }
+
+      .form-control label {
+        font-size: 15px;
+        font-weight: 600;
+      }
+
+      .form-control input {
+        font-size: 16px;
+        padding: 14px;
+      }
+
+      button {
+        font-size: 18px;
+        padding: 14px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+
+      a {
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Create Account</h2>
+      </div>
+
+      <form class="form" id="form">
+        <div class="form-control">
+          <label>Email</label>
+          <input type="text" id="email" placeholder="Enter your email" />
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <small>Error Message</small>
+        </div>
+
+        <div class="form-control">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter password" />
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <small>Error Message</small>
+        </div>
+
+        <div class="form-control">
+          <label>Confirm Password</label>
+          <input
+            type="password"
+            id="cpassword"
+            placeholder="Re-enter password"
+          />
+          <i class="fa-solid fa-circle-check"></i>
+          <i class="fa-solid fa-circle-exclamation"></i>
+          <small>Error Message</small>
+        </div>
+
+        <button type="submit">Signup</button>
+
+        <div style="text-align: center; margin-top: 15px">
+          <a href="login.html">Already have an account? Login</a>
+        </div>
+      </form>
+    </div>
+
+    <script src="/js/signup.js"></script>
+  </body>
+</html>
