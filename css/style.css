@@ -1,137 +1,108 @@
-*{
-  box-sizing:border-box;
-}
-body{
-  /* background: rgb(238,174,202);
-  background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%); */
-  font-family: sans-serif;
-  display:flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height:100vh;
-  margin:0;
-  background: url('https://source.unsplash.com/1600x900/?abstract') center/cover no-repeat;
-  backdrop-filter: blur(10px);
-
- 
-}
-.container{
-
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-
-  border-radius: 5px;
-  box-shadow:10px 20px 25px rgba(0,0,0,0.3);
-  overflow: hidden;
-  max-width: 100%;
-  width: 300px;
-  padding: 40px 40px;
+ body {
+    font-family: "Inter", sans-serif;
 }
 
-.form-control{
-  padding-bottom: 10px;
-}
-
-.header{
-  padding:10px 20px;
-  
-}
-
-.header h2{
-  margin: 0;
-  text-align: center;
-  display: block;
-}
-
-
-
-.form-control{
-  padding-bottom: 20px;
-  margin-bottom: 10px;
-  position:relative
-}
-
-.form-control label{
-  display: inline-block;
-  margin-bottom: 5px;
-}
-.form-control input{
-  border:2px solid #f0f0f0;
-  border-radius: 4px;
-  display:block;
-  font-size:14px;
-  padding:10px;
-  width:100%
-}
-
-.form-control input:focus{
-  outline:0;
-  border-color: #777;
-}
-
-.form-control.success  input{
-  border-color: #2ecc71;
-}
-
-.form-control.error input{
-  border-color: red;
-}
-
-.form-control i{
-  visibility: hidden;
-  position: absolute;
-  top:40px;
-  right:10px;
-}
-
-.form-control.success i.fa-circle-check{
-  color:#2ecc71;
-  visibility: visible;
-}
-
-.form-control.error i.fa-circle-exclamation{
-  color:red;
-  visibility: visible;
-}
-
-.form-control small{
-  color: red;
-  position: absolute;
-  left:0;
-  bottom: 0;
-  visibility: hidden;
-}
-
-.form-control.error small{
-  visibility: visible;
-}
-
-.form button{
-  background-color: rgb(29, 211, 211);
-  color: white;
-  border:0;
-  display: block;
-  font-size: 16px;
-  width:100%;
-  padding:10px;
-  margin-top:20px;
-  border-radius: 5px;
-}
-
-#output{
-  margin-top: 10px;
-  color:blue;
+.signup-card {
+    width: 350px;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
 }
 
 #errorBox {
-  margin-top: 10px;
-  padding: 10px;
-  background: #ffdddd;
-  color: #b30000;
-  border-left: 4px solid red;
-  border-radius: 4px;
-  font-size: 14px;
-  display: none;
+    display: none;
+    background: #FFCCCC;
+    color: #660000;
+    border-left: 4px solid red;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+
+.card {
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(18px);
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+
+.is-invalid {
+  border: 2px solid #ff4d4d !important;
+  background-color: #2a0000 !important;
+  color: #fff !important;
+}
+
+small {
+  color: #ff4d4d;
+  font-size: 13px;
+  padding-left: 2px;
+  margin-top: 3px;
+  display: block;
+}
+
+
+.shake {
+  animation: shake 0.2s linear 2;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0px); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-3px); }
+  100% { transform: translateX(0px); }
+} 
+
+
+.guvi-card {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  padding: 40px;
+  width: 430px;
+  color: #fff !important;
+  box-shadow: 0 0 35px rgba(0, 0, 0, 0.45);
+
+  animation: guviZoomIn 0.8s ease-out, guviFadeIn 1.2s ease-in-out;
+}
+
+
+.guvi-card h2, 
+.guvi-card h3 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  animation: guviSlideDown 0.9s ease;
+}
+
+
+.guvi-card p {
+  opacity: 0.9;
+  animation: guviFadeUp 1s ease;
+}
+
+.guvi-btn:hover {
+  transform: translateY(-3px);
+  transition: all 0.25s ease;
+}
+
+@keyframes guviFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes guviZoomIn {
+  0% { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes guviSlideDown {
+  0% { transform: translateY(-20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes guviFadeUp {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
 }

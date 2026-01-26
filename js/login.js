@@ -1,12 +1,31 @@
 $(document).ready(function () {
-  $("#form").on("submit", function (e) {
-    e.preventDefault();
+  function showFieldError(input, message) {
+    let small = input.next("small");
+    small.text(message);
+
+    input.addClass("is-invalid shake");
+    setTimeout(() => input.removeClass("shake"), 400);
+  }
+
+  function clearErrors() {
+    $("small").text("");
+    $(".form-control").removeClass("is-invalid");
+    $("#errorBox").addClass("d-none").text("");
+  }
+
+  $("#loginBtn").click(function () {
+    clearErrors();
 
     let email = $("#email").val().trim();
     let password = $("#password").val().trim();
 
-    if (email === "" || password === "") {
-      $("#errorBox").text("Email and password required").fadeIn();
+    if (email === "") {
+      showFieldError($("#email"), "Email is required");
+      return;
+    }
+
+    if (password === "") {
+      showFieldError($("#password"), "Password is required");
       return;
     }
 
@@ -17,20 +36,27 @@ $(document).ready(function () {
         input1: email,
         input2: password,
       },
+
       success: function (response) {
-        if (!response.status) {
-          $("#errorBox").text(response.message).fadeIn();
+        console.log("Login response:", response);
+
+        if (response.status === false) {
+          showFieldError($("#email"), "Invalid email or password");
+          showFieldError($("#password"), "Invalid email or password");
           return;
         }
 
-        localStorage.setItem("isLogin", true);
-        localStorage.setItem("emailid", response.data.emailid);
-        localStorage.setItem("session_id", response.session_id);
+        if (response.status === true) {
+          localStorage.setItem("isLogin", true);
+          localStorage.setItem("session_id", response.session_id);
+          localStorage.setItem("emailid", response.email);
 
-        window.location.href = "/html/welcome.html";
+          window.location.href = "/html/welcome.html";
+        }
       },
+
       error: function () {
-        $("#errorBox").text("Server error. Try again.").fadeIn();
+        $("#errorBox").removeClass("d-none").text("Server error. Try again");
       },
     });
   });

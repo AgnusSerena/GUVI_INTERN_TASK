@@ -2,132 +2,61 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Login</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
 
-    <style>
-      * {
-        box-sizing: border-box;
-      }
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
 
-      body {
-        font-family: sans-serif;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        margin: 0;
-        background: url("https://source.unsplash.com/1600x900/?abstract")
-          center/cover no-repeat;
-        backdrop-filter: blur(10px);
-      }
-
-      .container {
-        width: 420px;
-        padding: 40px 35px;
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0px 10px 35px rgba(0, 0, 0, 0.25);
-      }
-
-      .header {
-        text-align: center;
-        margin-bottom: 25px;
-      }
-
-      .header h2 {
-        margin: 0;
-        font-size: 26px;
-        font-weight: 600;
-      }
-
-      .form-control {
-        margin-bottom: 22px;
-      }
-
-      .form-control label {
-        display: block;
-        margin-bottom: 6px;
-        font-size: 15px;
-        font-weight: 500;
-      }
-
-      .form-control input {
-        width: 100%;
-        padding: 12px;
-        border: 2px solid #ddd;
-        border-radius: 6px;
-        font-size: 15px;
-        transition: 0.2s;
-      }
-
-      .form-control input:focus {
-        border-color: #777;
-      }
-
-      button {
-        width: 100%;
-        padding: 12px;
-        background: #00bcd4;
-        border: none;
-        color: white;
-        border-radius: 6px;
-        font-size: 17px;
-        cursor: pointer;
-        transition: 0.2s;
-      }
-
-      button:hover {
-        background: #009bb0;
-      }
-
-      #errorBox {
-        margin-top: 12px;
-        padding: 10px;
-        background: #ffe5e5;
-        color: #c20000;
-        border-left: 4px solid red;
-        border-radius: 5px;
-        display: none;
-        font-size: 14px;
-      }
-
-      .signup-link {
-        margin-top: 12px;
-        text-align: center;
-        font-size: 14px;
-      }
-    </style>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h2>Login</h2>
-      </div>
 
-      <form id="form">
-        <div class="form-control">
-          <label>Email</label>
-          <input type="text" id="email" placeholder="enter your email" />
+  <body class="bg-dark d-flex justify-content-center align-items-center vh-100">
+    <!-- disable autofill -->
+    <input type="text" style="display:none;">
+    <input type="password" style="display:none;">
+
+    <div class="card guvi-card" class="card shadow-lg p-4" style="width: 420px;">
+      <h3 class="text-center text-light mb-4">Welcome Back</h3>
+
+      <div id="errorBox" class="alert alert-danger d-none"></div>
+
+      <form id="loginForm" onsubmit="return false;">
+        
+        <div class="mb-3">
+          <label class="text-light">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control bg-dark text-light border-secondary"
+            autocomplete="off"
+          />
+          <small class="text-danger"></small>
         </div>
 
-        <div class="form-control">
-          <label>Password</label>
-          <input type="password" id="password" placeholder="enter password" />
+        <div class="mb-3">
+          <label class="text-light">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control bg-dark text-light border-secondary"
+            autocomplete="new-password"
+          />
+          <small class="text-danger"></small>
         </div>
 
-        <button type="submit">Login</button>
-
-        <div id="errorBox"></div>
-
-        <div class="signup-link">
-          <a href="signup.html">Not registered? Create account</a>
-        </div>
+        <button id="loginBtn" type="button" class="btn btn-primary w-100 py-2">
+          Login
+        </button>
       </form>
-    </div>
+
+      <p class="text-center mt-3">
+        <a href="/html/signup.html" class="text-info">Create a new account</a>
+      </p>
+    </class=>
 
     <script src="/js/login.js"></script>
   </body>

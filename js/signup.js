@@ -1,99 +1,87 @@
-// ❌ DO NOT REDIRECT ON PAGE LOAD
-// We removed the "isLogin" check completely.
+$(document).ready(function () {
+  function showFieldError(input, message) {
+    let small = input.next("small");
+    small.text(message);
 
-const form = document.getElementById("form");
+    input.addClass("is-invalid shake");
 
-// -----------------------------
-// Helper Functions
-// -----------------------------
-function setError(element, message) {
-  const formControl = element.parentElement;
-  formControl.className = "form-control error";
-  formControl.querySelector("small").innerText = message;
-}
-
-function setSuccess(element) {
-  const formControl = element.parentElement;
-  formControl.className = "form-control success";
-}
-
-function ValidateEmail(emailValue) {
-  return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(emailValue);
-}
-
-function checkInput() {
-  const email = document.getElementById("email");
-  const password = document.getElementById("password");
-  const cpassword = document.getElementById("cpassword");
-
-  let valid = true;
-
-  // Email
-  if (email.value.trim() === "") {
-    setError(email, "Email is required");
-    valid = false;
-  } else if (!ValidateEmail(email.value.trim())) {
-    setError(email, "Invalid Email");
-    valid = false;
-  } else {
-    setSuccess(email);
+    setTimeout(() => {
+      input.removeClass("shake");
+    }, 400);
   }
 
-  // Password
-  if (password.value.trim() === "") {
-    setError(password, "Password is required");
-    valid = false;
-  } else if (password.value.trim() !== cpassword.value.trim()) {
-    setError(password, "Passwords do not match");
-    valid = false;
-  } else {
-    setSuccess(password);
+  function clearErrors() {
+    $("small").text("");
+    $(".form-control").removeClass("is-invalid");
   }
 
-  // Confirm Password
-  if (cpassword.value.trim() === "") {
-    setError(cpassword, "Re-enter password");
-    valid = false;
-  } else if (password.value.trim() !== cpassword.value.trim()) {
-    setError(cpassword, "Passwords do not match");
-    valid = false;
-  } else {
-    setSuccess(cpassword);
-  }
+  $("#submitBtn").click(function () {
+    clearErrors();
 
-  return valid;
-}
+    let email = $("#email").val().trim();
+    let password = $("#password").val().trim();
+    let cpassword = $("#cpassword").val().trim();
 
-// -----------------------------
-// SUBMIT FORM
-// -----------------------------
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+    if (email === "") {
+      showFieldError($("#email"), "Email is required");
+      return;
+    }
 
-  if (!checkInput()) return;
+    if (password === "") {
+      showFieldError($("#password"), "Password is required");
+      return;
+    }
 
-  const email = $("#email").val();
-  const password = $("#password").val();
+    if (cpassword === "") {
+      showFieldError($("#cpassword"), "Please confirm password");
+      return;
+    }
 
-  $.ajax({
-    url: "http://localhost:8000/php/signup.php",
-    type: "POST",
-    data: { input3: email, input2: password },
-    success: function (response) {
-      console.log(response);
+    if (password !== cpassword) {
+      showFieldError($("#cpassword"), "Passwords do not match");
+      return;
+    }
 
-      const { session_id, data } = response;
+    // DATA TO SEND
+    let data = {
+      input2: password,
+      input3: email,
+    };
 
-      // Save session
-      localStorage.setItem("isLogin", "true");
-      localStorage.setItem("session_id", session_id);
-      localStorage.setItem("emailid", data.emailid);
+    $.ajax({
+      url: "/php/signup.php",
+      type: "POST",
+      data: data,
 
-      // Redirect to welcome page
-      window.location.href = "welcome.html";
-    },
-    error: function () {
-      setError(document.getElementById("email"), "Email already exists");
-    },
+      success: function (response) {
+        console.log("Signup response:", response);
+
+        // ❌ BACKEND ERROR
+        if (response.status === "error") {
+          showFieldError($("#email"), response.message);
+          return;
+        }
+
+        // ✅ SUCCESS → REDIRECT
+        if (response.status === "success") {
+          localStorage.setItem("isLogin", true);
+          localStorage.setItem("session_id", response.session_id);
+          localStorage.setItem("emailid", response.data.emailid);
+
+          // Go to welcome page
+          window.location.href = "/html/welcome.html";
+        }
+      },
+
+      error: function (xhr) {
+        console.log("Signup xhr:", xhr);
+
+        if (xhr.status === 409) {
+          showFieldError($("#email"), "Email already exists");
+        } else {
+          showFieldError($("#email"), "Server error. Try again.");
+        }
+      },
+    });
   });
 });
