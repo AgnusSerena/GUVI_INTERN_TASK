@@ -35,17 +35,45 @@ if (isset($_POST["input1"]) && isset($_POST["input2"])) {
 
     // Fetch full user data from MongoDB
     $mongoId = $row["mongodbId"];
-    $_id = new MongoDB\BSON\ObjectID($mongoId);
+
+    try {
+        $_id = new MongoDB\BSON\ObjectID($mongoId);
+    } catch (Exception $e) {
+        sendRespose(200, [
+            "status" => false,
+            "message" => "Invalid MongoDB ID format"
+        ]);
+    }
 
     $query = new MongoDB\Driver\Query(["_id" => $_id]);
     $cursor = $mongoClient->executeQuery("$mongodbDatabase.$mongodbCollection", $query);
-    $userData = current($cursor->toArray());
+
+    // Convert cursor to array safely
+    $mongoArray = $cursor->toArray();
+
+    if (empty($mongoArray)) {
+        sendRespose(200, [
+            "status" => false,
+            "message" => "MongoDB user data not found"
+        ]);
+    }
+
+    $userData = $mongoArray[0];
 
     // Create Redis session
-    $session_id = uniqid();
-    $redis->set("session:$session_id", json_encode($userData));
-    $redis->expire("session:$session_id", 600);
+    $session_id = uniqid("sess_", true);
 
+    try {
+        $redis->set("session:$session_id", json_encode($userData));
+        $redis->expire("session:$session_id", 600); // expires in 10 minutes
+    } catch (Exception $e) {
+        sendRespose(200, [
+            "status" => false,
+            "message" => "Redis error: " . $e->getMessage()
+        ]);
+    }
+
+    // Final response
     sendRespose(200, [
         "status" => true,
         "message" => "Login Success",

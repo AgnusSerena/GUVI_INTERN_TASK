@@ -1,7 +1,7 @@
 <?php
 $host = "localhost";
 $user = "root";
-$pass = "";      // empty password on Mac
+$pass = "";   
 $db   = "GuviTask";  
 
 $conn = new mysqli($host, $user, $pass, $db);

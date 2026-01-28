@@ -2,12 +2,9 @@ $(document).ready(function () {
   function showFieldError(input, message) {
     let small = input.next("small");
     small.text(message);
-
     input.addClass("is-invalid shake");
 
-    setTimeout(() => {
-      input.removeClass("shake");
-    }, 400);
+    setTimeout(() => input.removeClass("shake"), 400);
   }
 
   function clearErrors() {
@@ -18,64 +15,54 @@ $(document).ready(function () {
   $("#submitBtn").click(function () {
     clearErrors();
 
+    let fullname = $("#fullname").val().trim();
     let email = $("#email").val().trim();
     let password = $("#password").val().trim();
     let cpassword = $("#cpassword").val().trim();
 
-    if (email === "") {
-      showFieldError($("#email"), "Email is required");
-      return;
-    }
+    // VALIDATION
+    if (fullname === "")
+      return showFieldError($("#fullname"), "Full name is required");
+    if (email === "") return showFieldError($("#email"), "Email is required");
+    if (password === "")
+      return showFieldError($("#password"), "Password is required");
+    if (cpassword === "")
+      return showFieldError($("#cpassword"), "Please confirm password");
 
-    if (password === "") {
-      showFieldError($("#password"), "Password is required");
-      return;
-    }
+    if (password !== cpassword)
+      return showFieldError($("#cpassword"), "Passwords do not match");
 
-    if (cpassword === "") {
-      showFieldError($("#cpassword"), "Please confirm password");
-      return;
-    }
-
-    if (password !== cpassword) {
-      showFieldError($("#cpassword"), "Passwords do not match");
-      return;
-    }
-
-    // DATA TO SEND
+    // DATA TO SEND (MATCHES NEW signup.php)
     let data = {
-      input2: password,
-      input3: email,
+      fullname: fullname,
+      email: email,
+      password: password,
     };
 
     $.ajax({
       url: "/php/signup.php",
       type: "POST",
+      dataType: "json",
       data: data,
 
       success: function (response) {
         console.log("Signup response:", response);
 
-        // ❌ BACKEND ERROR
-        if (response.status === "error") {
+        // Backend error
+        if (!response.status) {
           showFieldError($("#email"), response.message);
           return;
         }
 
-        // ✅ SUCCESS → REDIRECT
-        if (response.status === "success") {
-          localStorage.setItem("isLogin", true);
-          localStorage.setItem("session_id", response.session_id);
-          localStorage.setItem("emailid", response.data.emailid);
+        // SUCCESS LOGIN AFTER SIGNUP
+        localStorage.setItem("session_id", response.session_id);
+        localStorage.setItem("email", response.data.emailid);
+        localStorage.setItem("mongoDbId", response.data.mongoDbId);
 
-          // Go to welcome page
-          window.location.href = "/html/welcome.html";
-        }
+        window.location.href = "/html/profile.html";
       },
 
       error: function (xhr) {
-        console.log("Signup xhr:", xhr);
-
         if (xhr.status === 409) {
           showFieldError($("#email"), "Email already exists");
         } else {

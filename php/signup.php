@@ -4,118 +4,100 @@ include "./dbconnection/mongodb.php";
 include "./dbconnection/redis.php";
 include "./dbconnection/response.php";
 
-
 // --------------------------------------------------
-// Helper function: Fetch user from MongoDB
+// Helper: Fetch Mongo User
 // --------------------------------------------------
 function getUserDetails($mongodbId) {
     global $mongoClient, $mongodbDatabase, $mongodbCollection;
 
     $_id = new MongoDB\BSON\ObjectID($mongodbId);
-    $filter = ['_id' => $_id];
-
-    $query = new MongoDB\Driver\Query($filter, []);
+    $query = new MongoDB\Driver\Query(['_id' => $_id]);
     $cursor = $mongoClient->executeQuery("$mongodbDatabase.$mongodbCollection", $query);
-
     return current($cursor->toArray());
 }
 
-
 // --------------------------------------------------
-// Create New User
+// Create User
 // --------------------------------------------------
-function CreateUser($email, $password, $insertStmt, $data) {
-    global $mongoClient, $mongodbDatabase, $mongodbCollection, $redis;
+function CreateUser($email, $password, $fullname) {
 
-    // Insert in MongoDB
+    global $conn, $mongoClient, $mongodbDatabase, $mongodbCollection, $redis;
+
+    // -----------------------
+    // Insert into MongoDB
+    // -----------------------
     $bulk = new MongoDB\Driver\BulkWrite;
-    $_id = $bulk->insert($data);
+    $mongoId = new MongoDB\BSON\ObjectID;
+
+    $bulk->insert([
+        "_id"      => $mongoId,
+        "email"    => $email,
+        "fullname" => $fullname,
+        "age"      => "",
+        "phone"    => ""
+    ]);
 
     $mongoClient->executeBulkWrite("$mongodbDatabase.$mongodbCollection", $bulk);
-    $mongoDbId = (string)$_id;
 
-    // Hash password & insert into MySQL
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    // -----------------------
+    // Insert into MySQL
+    // -----------------------
+    $hashed = password_hash($password, PASSWORD_DEFAULT);
 
-    mysqli_stmt_bind_param($insertStmt, "sss", $email, $hashedPassword, $mongoDbId);
+    $stmt = $conn->prepare("INSERT INTO users (email, userpswd, mongodbId) VALUES (?, ?, ?)");
+    $mid = (string)$mongoId;
+    $stmt->bind_param("sss", $email, $hashed, $mid);
+    $stmt->execute();
 
-    if (!mysqli_stmt_execute($insertStmt)) {
-        sendRespose(500, ["status" => "error", "message" => "Database insert failed"]);
-    }
+    // -----------------------
+    // Create Redis Session
+    // -----------------------
+    $session_id = uniqid("sess_", true);
 
-    // Create session
-    $session_id = uniqid();
-    $userDetails = getUserDetails($mongoDbId);
-
-    $sessionData = [
-        "userDetails" => $userDetails
+    $userDetails = [
+        "email"    => $email,
+        "fullname" => $fullname,
+        "age"      => "",
+        "phone"    => ""
     ];
 
-    $redis->set("session:$session_id", json_encode($sessionData));
-    $redis->expire("session:$session_id", 600);  // 10 minutes
+    $redis->set("session:$session_id", json_encode($userDetails));
+    $redis->expire("session:$session_id", 600);
 
-    // FINAL SUCCESS RESPONSE
     sendRespose(200, [
-        "status" => "success",
-        "message" => "User Registered Successfully",
+        "status"     => true,
+        "message"    => "Signup Successful",
         "session_id" => $session_id,
         "data" => [
-            "emailid" => $email,
-            "mongoDbId" => $mongoDbId
+            "emailid"    => $email,
+            "mongoDbId"  => (string)$mongoId
         ]
     ]);
 }
 
-
 // --------------------------------------------------
 // Handle Signup Request
 // --------------------------------------------------
-if (isset($_POST['input2']) && isset($_POST['input3'])) {
+if (isset($_POST["fullname"]) && isset($_POST["email"]) && isset($_POST["password"])) {
 
-    $password = trim($_POST['input2']);
-    $email = trim($_POST['input3']);
+    $fullname = trim($_POST["fullname"]);
+    $email    = trim($_POST["email"]);
+    $password = trim($_POST["password"]);
 
-    // Check if email already exists
-    $stmt = $conn->prepare("SELECT email FROM users WHERE email = ?");
+    // Check duplicate email
+    $stmt = $conn->prepare("SELECT email FROM users WHERE email=?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
-    $result = $stmt->get_result();
+    $exists = $stmt->get_result();
 
-    // Email exists → return proper JSON
-    if ($result->num_rows > 0) {
+    if ($exists->num_rows > 0) {
         sendRespose(409, [
-            "status" => "error",
+            "status" => false,
             "message" => "Email already exists"
         ]);
     }
 
-    // Insert new user
-    $insertSql = "INSERT INTO users (email, userpswd, mongodbId) VALUES (?, ?, ?)";
-    $insertStmt = mysqli_stmt_init($conn);
-
-    if (!mysqli_stmt_prepare($insertStmt, $insertSql)) {
-        sendRespose(500, ["status" => "error", "message" => "SQL Prepare Failed"]);
-    }
-
-    // MongoDB initial data
-    $mongoData = ["email" => $email];
-
-    CreateUser($email, $password, $insertStmt, $mongoData);
-
-    $stmt->close();
-    $conn->close();
+    // Create User
+    CreateUser($email, $password, $fullname);
 }
-
-// --------------------------------------------------
-// UPDATE USER (from profile page)
-// --------------------------------------------------
-if (isset($_POST["action"]) && $_POST["action"] == "update") {
-
-    $data = $_POST['profiledata'];
-    $email = $_POST['emailid'];
-    $redisId = $_POST['redisID'];
-
-    UpdateUser($email, $data, $redisId);
-}
-
 ?>

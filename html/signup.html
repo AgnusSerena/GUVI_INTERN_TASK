@@ -22,6 +22,18 @@
       <h3 class="text-center text-light mb-4">Create Account</h3>
 
       <form id="signupForm" onsubmit="return false;">
+        <!-- FULL NAME FIELD ADDED -->
+        <div class="mb-3">
+          <label class="text-light">Full Name</label>
+          <input
+            type="text"
+            id="fullname"
+            class="form-control bg-dark text-light border-secondary"
+            autocomplete="off"
+          />
+          <small class="text-danger"></small>
+        </div>
+
         <div class="mb-3">
           <label class="text-light">Email</label>
           <input
@@ -30,7 +42,7 @@
             class="form-control bg-dark text-light border-secondary"
             autocomplete="off"
           />
-          <small></small>
+          <small class="text-danger"></small>
         </div>
 
         <div class="mb-3">
@@ -41,7 +53,7 @@
             class="form-control bg-dark text-light border-secondary"
             autocomplete="new-password"
           />
-          <small></small>
+          <small class="text-danger"></small>
         </div>
 
         <div class="mb-3">
@@ -52,7 +64,7 @@
             class="form-control bg-dark text-light border-secondary"
             autocomplete="new-password"
           />
-          <small></small>
+          <small class="text-danger"></small>
         </div>
 
         <button id="submitBtn" type="button" class="btn btn-primary w-100 py-2">

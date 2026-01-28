@@ -106,3 +106,97 @@ small {
   0% { transform: translateY(10px); opacity: 0; }
   100% { transform: translateY(0); opacity: 1; }
 }
+
+/* ---------------- PROFILE UI EXTENSION ---------------- */
+
+/* Profile Card */
+.profile-card {
+  background: rgba(255,255,255,0.12);
+  backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: 35px;
+  width: 430px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 0 38px rgba(0,0,0,0.45);
+
+  animation: guviZoomIn 0.8s ease-out, guviFadeIn 1.2s ease-in-out;
+}
+
+/* Profile Image */
+.profile-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #3ea6ff;
+  box-shadow: 0 0 18px rgba(62,166,255,0.45);
+  animation: guviSlideDown 1s ease;
+}
+
+/* Small Elegant Upload Button */
+.upload-btn {
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 13px;
+  color: #fff;
+  background: #3ea6ff;
+  border-radius: 20px;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.25s ease;
+}
+
+.upload-btn:hover {
+  background: #1d7ecc;
+  transform: translateY(-2px);
+}
+
+/* Input Fields */
+.profile-card input {
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.2) !important;
+  color: #fff !important;
+  border-radius: 10px !important;
+  animation: guviFadeUp 0.85s ease;
+}
+
+.profile-card input:disabled {
+  opacity: 0.7;
+}
+
+/* Big Buttons */
+.profile-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  margin-top: 10px;
+  letter-spacing: 0.5px;
+}
+
+.save-btn {
+  background: #2e8b57;
+}
+
+.save-btn:hover {
+  background: #267549;
+}
+
+.logout-btn {
+  background: #c0392b;
+}
+
+.logout-btn:hover {
+  background: #992d22;
+}
+
+ #successBox {
+        display: none;
+        background: #c4ffcf;
+        color: #0b4d09;
+        border-left: 4px solid #2ecc71;
+        padding: 10px;
+        border-radius: 5px;
+      }
